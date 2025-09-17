@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pantalla sin señal</title>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#161616;
+    --ink:#e6e6e6;
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Work Sans",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial;
+  }
+
+  /* Lienzo */
+  .screen{
+    position:relative;
+    min-height:100vh;
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+    isolation:isolate;
+  }
+
+  /* Barrido principal: líneas horizontales subiendo (denso) */
+  .screen::before{
+    content:"";
+    position:absolute; inset:-30%;
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,.14) 0 1px,   /* línea clara fina */
+        rgba(0,0,0,0)         1px 3px  /* espacio */
+      );
+    mix-blend-mode:screen;
+    opacity:.38;
+    animation: sweepUp 0.9s linear infinite;
+    filter: contrast(180%) saturate(110%);
+    z-index:0;
+    pointer-events:none;
+  }
+
+  /* Barrido secundario: líneas más separadas y rápidas (parallax) */
+  .screen::after{
+    content:"";
+    position:absolute; inset:-40%;
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,.10) 0 2px,
+        rgba(0,0,0,0)         2px 7px
+      );
+    mix-blend-mode:screen;
+    opacity:.28;
+    animation: sweepUp 0.55s linear infinite reverse;
+    filter: contrast(160%);
+    z-index:0;
+    pointer-events:none;
+  }
+
+  /* Glitch suave (sube y baja levemente el contenido) */
+  .glitch-wrap{
+    position:relative;
+    z-index:2;
+    transform: translateZ(0);
+    animation: microJitter 1.8s steps(2,end) infinite;
+    padding: clamp(16px, 4vw, 40px);
+    width:min(90ch, 100%);
+  }
+
+  .title{
+    margin:0 0 .75rem 0;
+    text-transform:uppercase;
+    font-weight:700;
+    letter-spacing:.03em;
+    font-size:clamp(0.95rem, 1.4vw, 1.15rem);
+    opacity:.85;
+  }
+
+  .poem{
+    margin:0;
+    white-space:pre-wrap;
+    line-height:1.6;
+    font-size:clamp(1rem, 2.4vw, 1.35rem);
+    text-shadow: 0 0 .35rem rgba(0,0,0,.45);
+  }
+
+  /* Pequeño viñeteado para “pantalla” */
+  .vignette{
+    position:absolute; inset:0;
+    z-index:1; pointer-events:none;
+    box-shadow: inset 0 0 140px rgba(0,0,0,.55);
+  }
+
+  /* Animaciones */
+  @keyframes sweepUp{
+    from{ background-position: 0 0; }
+    to  { background-position: 0 -12px; } /* negativo = sube */
+  }
+
+  @keyframes microJitter{
+    0%, 18%, 22%, 100% { transform: translateY(0); }
+    20% { transform: translateY(-1px); }
+    55% { transform: translateY(-2px); }
+    75% { transform: translateY(1px); }
+  }
+
+  /* Opcional: aberración cromática mínima al pasar el mouse */
+  .glitch-wrap:hover .poem{
+    text-shadow:
+      1px 0 rgba(0,255,255,.12),
+     -1px 0 rgba(255,0,128,.12),
+      0 0 .45rem rgba(0,0,0,.35);
+  }
+
+</style>
+</head>
+<body>
+  <main class="screen">
+    <div class="vignette" aria-hidden="true"></div>
+
+    <section class="glitch-wrap" aria-label="Poema">
+      <h1 class="title">No entres dócilmente en esa buena noche</h1>
+      <pre class="poem">No entres dócilmente en esa buena noche,
+Que al final del día debería la vejez arder y delirar;
+Enfurécete, enfurécete ante la muerte de la luz.
+
+Aunque los sabios entienden al final que la oscuridad es lo correcto,
+Como a su verbo ningún rayo ha confiado vigor,
+No entran dócilmente en esa buena noche.
+
+Llorando los hombres buenos, al llegar la última ola
+Por el brillo con que sus frágiles obras pudieron haber danzado en una verde bahía,
+Se enfurecen, se enfurecen ante la muerte de la luz.
+
+Y los locos, que al sol cogieron al vuelo en sus cantares,
+Y advierten, demasiado tarde, la ofensa que le hacían,
+No entran dócilmente en esa buena noche.
+
+Y los hombres graves, que cerca de la muerte con la vista que se apaga
+Ven que esos ojos ciegos pudieron brillar como meteoros y ser alegres,
+Se enfurecen, se enfurecen ante la muerte de la luz.
+
+Y tú, padre mio, allá en tu cima triste,
+Maldíceme o bendíceme con tus fieras lágrimas, lo ruego.
+No entres dócilmente en esa buena noche.
+Enfurécete, enfurécete ante la muerte de la luz.</pre>
+    </section>
+  </main>
+</body>
+</html>
