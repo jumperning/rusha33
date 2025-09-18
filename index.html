@@ -19,61 +19,36 @@
     font-family:"Work Sans",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial;
   }
 
-  /* Lienzo */
-  .screen{
-    position:relative;
-    min-height:100vh;
-    display:grid;
-    place-items:center;
-    overflow:hidden;
-    isolation:isolate;
-  }
 
-  /* Barrido principal: líneas horizontales subiendo (denso) */
-  .screen::before{
-    content:"";
-    position:absolute; inset:-30%;
-    background:
-      repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,.14) 0 1px,   /* línea clara fina */
-        rgba(0,0,0,0)         1px 3px  /* espacio */
-      );
-    mix-blend-mode:screen;
-    opacity:.38;
-    animation: sweepUp 0.9s linear infinite;
-    filter: contrast(180%) saturate(110%);
-    z-index:0;
-    pointer-events:none;
-  }
 
-  /* Barrido secundario: líneas más separadas y rápidas (parallax) */
-  .screen::after{
-    content:"";
-    position:absolute; inset:-40%;
-    background:
-      repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,.10) 0 2px,
-        rgba(0,0,0,0)         2px 7px
-      );
-    mix-blend-mode:screen;
-    opacity:.28;
-    animation: sweepUp 0.55s linear infinite reverse;
-    filter: contrast(160%);
-    z-index:0;
-    pointer-events:none;
-  }
+.bg {
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  width: 200%;
+  height: 200vh;
+  background: transparent url('http://assets.iceable.com/img/noise-transparent.png') repeat 0 0;
+  background-repeat: repeat;
+  animation: bg-animation .2s infinite;
+  opacity: .9;
+  visibility: visible;
+}
 
-  /* Glitch suave (sube y baja levemente el contenido) */
-  .glitch-wrap{
-    position:relative;
-    z-index:2;
-    transform: translateZ(0);
-    animation: microJitter 1.8s steps(2,end) infinite;
-    padding: clamp(16px, 4vw, 40px);
-    width:min(90ch, 100%);
-  }
+@keyframes bg-animation {
+    0% { transform: translate(0,0) }
+    10% { transform: translate(-5%,-5%) }
+    20% { transform: translate(-10%,5%) }
+    30% { transform: translate(5%,-10%) }
+    40% { transform: translate(-5%,15%) }
+    50% { transform: translate(-10%,5%) }
+    60% { transform: translate(15%,0) }
+    70% { transform: translate(0,10%) }
+    80% { transform: translate(-15%,0) }
+    90% { transform: translate(10%,5%) }
+    100% { transform: translate(5%,0) }
+}
 
   .title{
     margin:0 0 .75rem 0;
@@ -99,26 +74,7 @@
     box-shadow: inset 0 0 140px rgba(0,0,0,.55);
   }
 
-  /* Animaciones */
-  @keyframes sweepUp{
-    from{ background-position: 0 0; }
-    to  { background-position: 0 -12px; } /* negativo = sube */
-  }
 
-  @keyframes microJitter{
-    0%, 18%, 22%, 100% { transform: translateY(0); }
-    20% { transform: translateY(-1px); }
-    55% { transform: translateY(-2px); }
-    75% { transform: translateY(1px); }
-  }
-
-  /* Opcional: aberración cromática mínima al pasar el mouse */
-  .glitch-wrap:hover .poem{
-    text-shadow:
-      1px 0 rgba(0,255,255,.12),
-     -1px 0 rgba(255,0,128,.12),
-      0 0 .45rem rgba(0,0,0,.35);
-  }
 /* evita viudas/huérfanas ajustando espacios automáticamente (Chrome/Edge/Safari modernos) */
 .poem{ text-wrap: pretty; hyphens: auto; }
 
@@ -127,7 +83,7 @@
 
 </style>
 </head>
-<body>
+<body class="bg">
   <main class="screen">
     <div class="vignette" aria-hidden="true"></div>
 
