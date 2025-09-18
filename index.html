@@ -119,6 +119,11 @@
      -1px 0 rgba(255,0,128,.12),
       0 0 .45rem rgba(0,0,0,.35);
   }
+/* evita viudas/huérfanas ajustando espacios automáticamente (Chrome/Edge/Safari modernos) */
+.poem{ text-wrap: pretty; hyphens: auto; }
+
+/* para el título multi-línea */
+.title{ text-wrap: balance; }
 
 </style>
 </head>
@@ -127,7 +132,6 @@
     <div class="vignette" aria-hidden="true"></div>
 
     <section class="glitch-wrap" aria-label="Poema">
-      <h1 class="title">No entres dócilmente en esa buena noche</h1>
       <pre class="poem">No entres dócilmente en esa buena noche,
 Que al final del día debería la vejez arder y delirar;
 Enfurécete, enfurécete ante la muerte de la luz.
@@ -154,5 +158,34 @@ No entres dócilmente en esa buena noche.
 Enfurécete, enfurécete ante la muerte de la luz.</pre>
     </section>
   </main>
+  <script>
+(function widowFixPre(selector, minLastWords = 2){
+  const pre = document.querySelector(selector);
+  if (!pre) return;
+
+  // Trabajamos con el texto crudo y reescribimos usando NO-BREAK SPACE (\u00A0)
+  const lines = pre.textContent.split('\n');
+
+  const fixed = lines.map(line => {
+    const raw = line;                         // preserva indentación/spaces
+    const trimmed = raw.trimEnd();
+    if (!trimmed) return raw;                 // líneas vacías (saltos de estrofa)
+
+    // Une las últimas N palabras con NBSP para evitar viudas
+    let out = trimmed;
+    for (let i = 0; i < minLastWords - 1; i++) {
+      out = out.replace(/\s+([^\s]+)\s*$/, '\u00A0$1');
+    }
+
+    // reinyecta los espacios iniciales si hubiera
+    const leading = raw.match(/^\s*/)[0] ?? '';
+    return leading + out;
+  });
+
+  pre.textContent = fixed.join('\n');
+})('.poem', 2); // cambiá a 3 si querés unir las últimas 3 palabras
+</script>
+
 </body>
+
 </html>
